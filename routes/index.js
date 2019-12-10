@@ -12,7 +12,7 @@ router.get('/signin', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.post('/signup',async function(req, res, next) {
+router.post('/sign-up',async function(req, res, next) {
   const user = await userModel.findOne({
     email:req.body.email
   })
@@ -20,15 +20,13 @@ router.post('/signup',async function(req, res, next) {
     console.log('We found a User with this email')
     res.json({user});
   }else{
-
     console.log('There is no user with this email ! So we need to add the user')
-  
     const newUser = await new userModel({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      adress: req.body.adress,
-      phone: req.body.phone,
-      mail: req.body.mail,
+      address: req.body.address,
+      phone: req.body.telephone,
+      email: req.body.email,
       password: req.body.password,
     });
 

@@ -4,8 +4,9 @@ var UserSchema= mongoose.Schema({
     firstName: String,
     lastName: String,
     phone: Number,
-    mail:String,
-    password:String,
+    email: String,
+    password: String,
+    address: String,
     helpRequest: [{ type: mongoose.Schema.Types.ObjectId, ref: 'requestSchema'}],
     })
 
