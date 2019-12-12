@@ -47,7 +47,7 @@ router.post('/sign-up',async function(req, res, next) {
   } 
 });
 
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/HomePage', function(req, res, next) {
+  res.json( { title: 'Express' });
 });
 module.exports = router;
