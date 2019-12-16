@@ -3,7 +3,10 @@ const mongoose = require('./bdd');
 
 var requestSchema = mongoose.Schema({
     category:String,
-    position:String,
+    position: String,
+    longitude: String,
+    latitude: String,
+    image: String,
     description:String,
     dateRequest:Date,
     dateFinish: Date,

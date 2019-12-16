@@ -1,7 +1,11 @@
 var express = require('express');
 var router = express.Router();
-const mongoose = require("../models/bdd")
-var userModel = require("../models/users")
+const mongoose = require("../models/bdd");
+var userModel = require("../models/users");
+var requestModel = require("../models/request");
+let request = require('async-request'),
+    response;
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -15,7 +19,7 @@ router.get('/sign-in',async function(req, res, next) {
   })
   if(user){
     console.log('We found a User with this email')
-    res.json({user});
+    res.json({user, result: true});
   }else{
       console.log('There is no user with this email ! So we need to add the user')
       console.log(user)
@@ -54,7 +58,27 @@ router.get('/profil',async function(req, res, next) {
   res.json({user});
 });
 
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.post('/new_request',async function(req, res, next) {
+  const user = await userModel.findById({
+    _id: req.body.id
+  })
+  console.log(user)
+  var addressUser = user.address;
+  var data = await request("https://api.opencagedata.com/geocode/v1/json?q="+addressUser+"&key=4872ac082674453280a0f4b6f7f7a9bc&language=fr&pretty=1")
+  body = JSON.parse(data.body);
+  console.log(body.results[0].geometry)
+  const newRequest = await new requestModel({
+      position: addressUser,
+      longitude: body.results[0].geometry.lng,
+      latitude: body.results[0].geometry.lat,
+      category: req.body.category,
+      description: req.body.description,
+  })
+  newRequest.save(function(error, requete) {
+    console.log("Requete SAVED ---->", requete)
+    res.json({result: true});
+  });
 });
+
+
 module.exports = router;
