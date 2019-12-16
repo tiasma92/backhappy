@@ -74,10 +74,23 @@ router.post('/new_request',async function(req, res, next) {
       category: req.body.category,
       description: req.body.description,
   })
-  newRequest.save(function(error, requete) {
+  // userModel.findOne({ _id: req.body.id }).populate('helpRequest').exec(function (err, user) {
+  //   console.log("---------"+user);
+  // });
+  newRequest.save(async function(error, requete) {
     console.log("Requete SAVED ---->", requete)
+    user.helpRequest.push(requete._id)
+    user.save()
+    console.log(user)
     res.json({result: true});
   });
+});
+
+router.get('/request',async function(req, res, next) {
+  const request = await requestModel.find({
+  })
+  console.log(request)
+  res.json({request});
 });
 
 

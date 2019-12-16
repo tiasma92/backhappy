@@ -1,4 +1,4 @@
-var mongoose=require('./bdd')
+var mongoose = require('./bdd')
 
 var UserSchema= mongoose.Schema({
     firstName: String,
@@ -7,7 +7,7 @@ var UserSchema= mongoose.Schema({
     email: String,
     password: String,
     address: String,
-    helpRequest: [{ type: mongoose.Schema.Types.ObjectId, ref: 'requestSchema'}],
+    helpRequest: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Request'}],
     })
 
 var userModel = mongoose.model('Users', UserSchema);
