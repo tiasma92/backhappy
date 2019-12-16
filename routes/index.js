@@ -47,7 +47,14 @@ router.post('/sign-up',async function(req, res, next) {
   } 
 });
 
-router.get('/HomePage', function(req, res, next) {
-  res.json( { title: 'Express' });
+router.get('/profil',async function(req, res, next) {
+  const user = await userModel.findById({
+    _id: req.query.id
+  })
+  res.json({user});
+});
+
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express' });
 });
 module.exports = router;
