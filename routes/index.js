@@ -15,7 +15,8 @@ router.get('/', function(req, res, next) {
 router.get('/sign-in',async function(req, res, next) {
   console.log(req.query.email)
   const user = await userModel.findOne({
-    email: req.query.email
+    email: req.query.email,
+    password: req.query.password
   })
   if(user){
     console.log('We found a User with this email')
@@ -28,7 +29,8 @@ router.get('/sign-in',async function(req, res, next) {
 
 router.post('/sign-up',async function(req, res, next) {
   const user = await userModel.findOne({
-    email:req.body.email
+    email:req.body.email,
+    password: req.body.password
   })
   if(user){
     console.log('We found a User with this email')
@@ -93,5 +95,34 @@ router.get('/request',async function(req, res, next) {
   res.json({request});
 });
 
+router.get('/valid_request',async function(req, res, next) {
+  const request = await requestModel.findById({_id: req.query.id_request
+  })
+  const user = await userModel.findById({_id: req.query.id_user})
+  user.helperRequest.push(request._id)
+  user.save()
+  console.log("------------------",request)
+  console.log(user)
+  res.json({result:true});
+});
+
+
+router.get('/myhistory',async function(req, res, next) {
+   await userModel.findById({
+    _id: req.query.id
+  }).populate("helpRequest").exec(function (err, user) {
+    console.log("--------",user)
+    res.json({user});
+  });
+});
+
+router.get('/myhelp',async function(req, res, next) {
+  await userModel.findById({
+   _id: req.query.id
+ }).populate("helperRequest").exec(function (err, user) {
+   console.log("--------",user)
+   res.json({user});
+ });
+});
 
 module.exports = router;

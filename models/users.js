@@ -8,6 +8,7 @@ var UserSchema= mongoose.Schema({
     password: String,
     address: String,
     helpRequest: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Request'}],
+    helperRequest: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Request'}],
     })
 
 var userModel = mongoose.model('Users', UserSchema);
