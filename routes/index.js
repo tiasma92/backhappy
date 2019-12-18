@@ -75,6 +75,7 @@ router.post('/new_request',async function(req, res, next) {
       latitude: body.results[0].geometry.lat,
       category: req.body.category,
       description: req.body.description,
+      image: req.body.image,
   })
   // userModel.findOne({ _id: req.body.id }).populate('helpRequest').exec(function (err, user) {
   //   console.log("---------"+user);
