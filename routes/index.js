@@ -75,7 +75,8 @@ router.post('/new_request',async function(req, res, next) {
       latitude: body.results[0].geometry.lat,
       category: req.body.category,
       description: req.body.description,
-      image: req.body.image,
+      statut: "En attente",
+      idAsker: req.body.id,
   })
   // userModel.findOne({ _id: req.body.id }).populate('helpRequest').exec(function (err, user) {
   //   console.log("---------"+user);
@@ -99,6 +100,9 @@ router.get('/request',async function(req, res, next) {
 router.get('/valid_request',async function(req, res, next) {
   const request = await requestModel.findById({_id: req.query.id_request
   })
+  await request.updateOne({statut: "En cours"}, function(error, raw) {
+  })
+
   const user = await userModel.findById({_id: req.query.id_user})
   user.helperRequest.push(request._id)
   user.save()
@@ -124,6 +128,21 @@ router.get('/myhelp',async function(req, res, next) {
    console.log("--------",user)
    res.json({user});
  });
+});
+
+router.get('/find_request',async function(req, res, next) {
+  await requestModel.findById({_id:req.query.id_request}).populate("idAsker").exec(function (err, request) {
+    console.log("--------",request)
+    res.json({request});
+  });
+});
+
+router.get('/end_request',async function(req, res, next) {
+  const request = await requestModel.findById({_id: req.query.id_request
+  })
+  await request.updateOne({statut: "Terminé"}, function(error, raw) {
+  })
+    res.json({result: true});
 });
 
 module.exports = router;

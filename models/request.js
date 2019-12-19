@@ -12,6 +12,8 @@ var requestSchema = mongoose.Schema({
     dateFinish: Date,
     statut: String,
     notation:String,
+    idAsker: { type: mongoose.Schema.Types.ObjectId, ref: 'Users'},
+    idHelper: { type: mongoose.Schema.Types.ObjectId, ref: 'Users'},
 })
 
 var requestModel = mongoose.model('Request', requestSchema)
