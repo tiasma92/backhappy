@@ -43,6 +43,7 @@ router.post('/sign-up',async function(req, res, next) {
       address: req.body.address,
       phone: req.body.telephone,
       email: req.body.email,
+      city: req.body.city,
       password: req.body.password,
     });
 
@@ -65,9 +66,10 @@ router.post('/new_request',async function(req, res, next) {
     _id: req.body.id
   })
   console.log(user)
-  var addressUser = user.address;
+  var addressUser = user.address+""+user.city;
   var data = await request("https://api.opencagedata.com/geocode/v1/json?q="+addressUser+"&key=4872ac082674453280a0f4b6f7f7a9bc&language=fr&pretty=1")
   body = JSON.parse(data.body);
+  console.log(body)
   console.log(body.results[0].geometry)
   const newRequest = await new requestModel({
       position: addressUser,
