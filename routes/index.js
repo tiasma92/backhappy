@@ -12,22 +12,27 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+/* GET SIGN-IN. */
 router.get('/sign-in',async function(req, res, next) {
   console.log(req.query.email)
   const user = await userModel.findOne({
     email: req.query.email,
     password: req.query.password
   })
+  /* Test if the user exist */
   if(user){
     console.log('We found a User with this email')
     res.json({user, result: true});
+    /* Redirect to page Sign-up. */
   }else{
       console.log('There is no user with this email ! So we need to add the user')
       console.log(user)
     res.json({result: false})
   }});
 
+  /* For register */
 router.post('/sign-up',async function(req, res, next) {
+  /* Search if the user exist already. */
   const user = await userModel.findOne({
     email:req.body.email,
     password: req.body.password
@@ -35,6 +40,7 @@ router.post('/sign-up',async function(req, res, next) {
   if(user){
     console.log('We found a User with this email')
     res.json({user});
+    /* Register a new user */
   }else{
     console.log('There is no user with this email ! So we need to add the user')
     const newUser = await new userModel({
@@ -54,6 +60,7 @@ router.post('/sign-up',async function(req, res, next) {
   } 
 });
 
+/* For find my user profil with my id */
 router.get('/profil',async function(req, res, next) {
   const user = await userModel.findById({
     _id: req.query.id
@@ -61,16 +68,19 @@ router.get('/profil',async function(req, res, next) {
   res.json({user});
 });
 
+/* Register a new request from someone who needs help */
 router.post('/new_request',async function(req, res, next) {
   const user = await userModel.findById({
     _id: req.body.id
   })
   console.log(user)
-  var addressUser = user.address+""+user.city;
+  var addressUser = user.address;
+  /* Use api from opencage for convert a real address in coordonate */
   var data = await request("https://api.opencagedata.com/geocode/v1/json?q="+addressUser+"&key=4872ac082674453280a0f4b6f7f7a9bc&language=fr&pretty=1")
   body = JSON.parse(data.body);
   console.log(body)
   console.log(body.results[0].geometry)
+  /* Save the request */
   const newRequest = await new requestModel({
       position: addressUser,
       longitude: body.results[0].geometry.lng,
@@ -85,6 +95,7 @@ router.post('/new_request',async function(req, res, next) {
   // });
   newRequest.save(async function(error, requete) {
     console.log("Requete SAVED ---->", requete)
+    /* Push the id from the request in the information of user */
     user.helpRequest.push(requete._id)
     user.save()
     console.log(user)
@@ -92,6 +103,7 @@ router.post('/new_request',async function(req, res, next) {
   });
 });
 
+/* For check all the request on the map */
 router.get('/request',async function(req, res, next) {
   const request = await requestModel.find({
   })
@@ -99,9 +111,11 @@ router.get('/request',async function(req, res, next) {
   res.json({request});
 });
 
+/* For take a request */
 router.get('/valid_request',async function(req, res, next) {
   const request = await requestModel.findById({_id: req.query.id_request
   })
+  /* For change the statut */
   await request.updateOne({statut: "En cours"}, function(error, raw) {
   })
 
@@ -113,7 +127,7 @@ router.get('/valid_request',async function(req, res, next) {
   res.json({result:true});
 });
 
-
+/* For check all the help request. */
 router.get('/myhistory',async function(req, res, next) {
    await userModel.findById({
     _id: req.query.id
@@ -123,6 +137,7 @@ router.get('/myhistory',async function(req, res, next) {
   });
 });
 
+/* For check all the request taken by a helper */
 router.get('/myhelp',async function(req, res, next) {
   await userModel.findById({
    _id: req.query.id
@@ -132,6 +147,7 @@ router.get('/myhelp',async function(req, res, next) {
  });
 });
 
+/* For find the user who needs help from his request */
 router.get('/find_request',async function(req, res, next) {
   await requestModel.findById({_id:req.query.id_request}).populate("idAsker").exec(function (err, request) {
     console.log("--------",request)
@@ -139,6 +155,7 @@ router.get('/find_request',async function(req, res, next) {
   });
 });
 
+/* For finish the request and actualize his statut. */
 router.get('/end_request',async function(req, res, next) {
   const request = await requestModel.findById({_id: req.query.id_request
   })
