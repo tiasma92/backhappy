@@ -3,7 +3,7 @@ var mongoose = require('./bdd')
 var UserSchema= mongoose.Schema({
     firstName: String,
     lastName: String,
-    phone: Number,
+    phone: String,
     email: String,
     password: String,
     address: String,

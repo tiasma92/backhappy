@@ -74,7 +74,7 @@ router.post('/new_request',async function(req, res, next) {
     _id: req.body.id
   })
   console.log(user)
-  var addressUser = user.address;
+  var addressUser = `${req.body.address} ${req.body.city}`;
   /* Use api from opencage for convert a real address in coordonate */
   var data = await request("https://api.opencagedata.com/geocode/v1/json?q="+addressUser+"&key=4872ac082674453280a0f4b6f7f7a9bc&language=fr&pretty=1")
   body = JSON.parse(data.body);
@@ -109,6 +109,19 @@ router.get('/request',async function(req, res, next) {
   })
   console.log(request)
   res.json({request});
+});
+
+router.post('/update_profil',async function(req, res, next) {
+  const user = await userModel.findById({_id: req.body.id
+  })
+  await user.update({
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    phone: req.body.telephone,
+    address: req.body.address,
+    city: req.body.city})
+    console.log(user)
+  res.json({user});
 });
 
 /* For take a request */
