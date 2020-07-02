@@ -6,8 +6,11 @@ var UserSchema= mongoose.Schema({
     phone: String,
     email: String,
     password: String,
+    token: String,
+    salt: String,
     address: String,
     city: String,
+    pictureName: String,
     helpRequest: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Request'}],
     helperRequest: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Request'}],
     })
